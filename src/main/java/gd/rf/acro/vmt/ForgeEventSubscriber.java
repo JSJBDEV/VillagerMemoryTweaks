@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -20,6 +21,7 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.commons.lang3.RandomUtils;
 import org.lwjgl.system.CallbackI;
 
 import javax.swing.*;
@@ -95,6 +97,23 @@ public class ForgeEventSubscriber {
         }
         return null;
     }
+    private static List<BlockPos> searchForBeds(PlayerEntity villagerEntity)
+    {
+        List<BlockPos> beds = new ArrayList<>();
+        World world = villagerEntity.getEntityWorld();
+        BlockPos pos = villagerEntity.getPosition();
+        for (int i = pos.getX()-searchrange; i < pos.getX()+searchrange; i++) {
+            for (int j = pos.getY()-25; j < pos.getY()+25; j++) {
+                for (int k = pos.getZ()-searchrange; k < pos.getZ()+searchrange; k++) {
+                    if(BlockTags.BEDS.contains(world.getBlockState(new BlockPos(i,j,k)).getBlock()))
+                    {
+                        beds.add(new BlockPos(i,j,k));
+                    }
+                }
+            }
+        }
+        return beds;
+    }
 
 
     private static final List<String> JOB_SITES = Arrays.asList(
@@ -136,6 +155,7 @@ public class ForgeEventSubscriber {
     //actually does most of the fixing
     private static void assignJobsAndMeetingPoint(PlayerEntity playerEntity,List<BlockPos> worksites, BlockPos point)
     {
+        List<BlockPos> beds = searchForBeds(playerEntity);
         List<VillagerEntity> villagers = playerEntity.getEntityWorld().getEntitiesWithinAABB(
                 VillagerEntity.class,
                 new AxisAlignedBB(playerEntity.getPosition().add(0-searchrange,0-searchrange,0-searchrange),playerEntity.getPosition().add(searchrange,searchrange,searchrange)));
@@ -164,6 +184,8 @@ public class ForgeEventSubscriber {
 
                }
            }
+           citizen.getBrain().setMemory(MemoryModuleType.HOME,GlobalPos.of(playerEntity.world.dimension.getType(),beds.remove(RandomUtils.nextInt(0,beds.size()))));
+
        });
     }
 }

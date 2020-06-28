@@ -11,7 +11,6 @@ import net.minecraftforge.fml.config.ModConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
 
 @Mod(VMT.MODID)
 public class VMT {
@@ -21,6 +20,6 @@ public class VMT {
     public VMT()
     {
         LOGGER.debug("*villager noises intensify*");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, gd.rf.acro.vmt.ModConfig.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, gd.rf.acro.vmt.ModConfig.SPEC);
     }
 }
