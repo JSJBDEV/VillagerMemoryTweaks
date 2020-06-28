@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "vmt",
+  "ingredients": [
+
+    {"item": "minecraft:book"},
+    {"item": "minecraft:emerald"}
+
+  ],
+  "result": {
+    "item": "vmt:village_info_item"
+  }
+}
